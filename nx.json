@@ -33,6 +33,18 @@
   "projects": {
     "kernel": {
       "tags": []
+    },
+    "desktop": {
+      "tags": []
+    },
+    "desktop-e2e": {
+      "tags": [],
+      "implicitDependencies": [
+        "desktop"
+      ]
+    },
+    "electron-client": {
+      "tags": []
     }
   }
 }

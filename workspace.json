@@ -13,12 +13,16 @@
       "targets": {
         "build": {
           "executor": "@nrwl/node:build",
-          "outputs": ["{options.outputPath}"],
+          "outputs": [
+            "{options.outputPath}"
+          ],
           "options": {
             "outputPath": "dist/apps/kernel",
             "main": "apps/kernel/src/main.ts",
             "tsConfig": "apps/kernel/tsconfig.app.json",
-            "assets": ["apps/kernel/src/assets"]
+            "assets": [
+              "apps/kernel/src/assets"
+            ]
           },
           "configurations": {
             "production": {
@@ -43,17 +47,218 @@
         "lint": {
           "executor": "@nrwl/linter:eslint",
           "options": {
-            "lintFilePatterns": ["apps/kernel/**/*.ts"]
+            "lintFilePatterns": [
+              "apps/kernel/**/*.ts"
+            ]
           }
         },
         "test": {
           "executor": "@nrwl/jest:jest",
-          "outputs": ["coverage/apps/kernel"],
+          "outputs": [
+            "coverage/apps/kernel"
+          ],
           "options": {
             "jestConfig": "apps/kernel/jest.config.js",
             "passWithNoTests": true
           }
         }
+      }
+    },
+    "desktop": {
+      "root": "apps/desktop",
+      "sourceRoot": "apps/desktop/src",
+      "projectType": "application",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/web:build",
+          "outputs": [
+            "{options.outputPath}"
+          ],
+          "options": {
+            "outputPath": "dist/apps/desktop",
+            "index": "apps/desktop/src/index.html",
+            "main": "apps/desktop/src/main.tsx",
+            "polyfills": "apps/desktop/src/polyfills.ts",
+            "tsConfig": "apps/desktop/tsconfig.app.json",
+            "assets": [
+              "apps/desktop/src/favicon.ico",
+              "apps/desktop/src/assets"
+            ],
+            "styles": [
+              "apps/desktop/src/styles.scss"
+            ],
+            "scripts": [],
+            "webpackConfig": "@nrwl/react/plugins/webpack"
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "apps/desktop/src/environments/environment.ts",
+                  "with": "apps/desktop/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "@nrwl/web:dev-server",
+          "options": {
+            "buildTarget": "desktop:build"
+          },
+          "configurations": {
+            "production": {
+              "buildTarget": "desktop:build:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/desktop/**/*.{ts,tsx,js,jsx}"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "outputs": [
+            "coverage/apps/desktop"
+          ],
+          "options": {
+            "jestConfig": "apps/desktop/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    },
+    "desktop-e2e": {
+      "root": "apps/desktop-e2e",
+      "sourceRoot": "apps/desktop-e2e/src",
+      "projectType": "application",
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/cypress:cypress",
+          "options": {
+            "cypressConfig": "apps/desktop-e2e/cypress.json",
+            "tsConfig": "apps/desktop-e2e/tsconfig.e2e.json",
+            "devServerTarget": "desktop:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "desktop:serve:production"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/desktop-e2e/**/*.{js,ts}"
+            ]
+          }
+        }
+      }
+    },
+    "electron-client": {
+      "root": "apps/electron-client",
+      "sourceRoot": "apps/electron-client/src",
+      "projectType": "application",
+      "prefix": "electron-client",
+      "generators": {},
+      "targets": {
+        "build": {
+          "executor": "nx-electron:build",
+          "options": {
+            "outputPath": "dist/apps/electron-client",
+            "main": "apps/electron-client/src/main.ts",
+            "tsConfig": "apps/electron-client/tsconfig.app.json",
+            "assets": [
+              "apps/electron-client/src/assets"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/electron-client/src/environments/environment.ts",
+                  "with": "apps/electron-client/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "nx-electron:execute",
+          "options": {
+            "buildTarget": "electron-client:build"
+          }
+        },
+        "package": {
+          "executor": "nx-electron:package",
+          "options": {
+            "name": "electron-client",
+            "frontendProject": "desktop",
+            "outputPath": "dist/packages",
+            "prepackageOnly": true
+          }
+        },
+        "make": {
+          "executor": "nx-electron:make",
+          "options": {
+            "name": "electron-client",
+            "frontendProject": "desktop",
+            "outputPath": "dist/executables"
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": [
+              "apps/electron-client/**/*.ts"
+            ]
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "apps/electron-client/jest.config.js",
+            "passWithNoTests": true
+          }
+        }
+      }
+    }
+  },
+  "generators": {
+    "@nrwl/react": {
+      "application": {
+        "style": "scss",
+        "linter": "eslint",
+        "babel": true
+      },
+      "component": {
+        "style": "scss"
+      },
+      "library": {
+        "style": "scss",
+        "linter": "eslint"
       }
     }
   }
