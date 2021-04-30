@@ -1,3 +1,10 @@
 module.exports = {
-  projects: ['<rootDir>/apps/kernel', '<rootDir>/apps/desktop',"<rootDir>/apps/apps/electron-client","<rootDir>/apps/electron-client"],
+  displayName: 'next10',
+  preset: '../../jest.preset.js',
+  transform: {
+    '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nrwl/react/plugins/jest',
+    '^.+\\.[tj]sx?$': 'babel-jest',
+  },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  coverageDirectory: '../../coverage/apps/next10',
 };
